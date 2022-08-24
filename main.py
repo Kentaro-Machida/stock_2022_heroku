@@ -48,9 +48,15 @@ def uploads_file():
             img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename) 
             file.save(img_path)
             # アップロード後のページに転送
-            detected_img = get_detected_image(config_path = CONFIG_PATH,img_path=img_path)
-            # if detected_img == False:
-            #     return "ストックが発見できませんでした"
+            detected ,detected_img = get_detected_image(config_path = CONFIG_PATH,img_path=img_path)
+            if detected == False:
+                return """
+                ストックが発見できませんでした。以下のことがないかを確認してください。\n
+                ・ストックとの距離が近すぎる。遠すぎる。
+                ・葉どうしが重なってしまっている。
+                ・葉の色と似た物体が一緒に写り込んでしまっている。
+                """
+            
             out_path = os.path.join("detected", filename)
             cv2.imwrite(out_path, detected_img)
             return redirect(url_for('uploaded_file', filename=filename))
@@ -60,12 +66,12 @@ def uploads_file():
         <head>
             <meta charset="UTF-8">
             <title>
-                ファイルをアップロードして判定しよう
+                ストックの画像をアップロードして八重鑑別しよう！
             </title>
         </head>
         <body>
             <h1>
-                ファイルをアップロードして判定しよう
+                ストックの画像をアップロードして八重鑑別しよう！
             </h1>
             <form method = post enctype = multipart/form-data>
             <p><input type=file name = file>

@@ -42,10 +42,11 @@ def tensor_preprocess(img:np.ndarray)->torch.Tensor:
     input = torch.unsqueeze(input, 0)
     return input
 
-def get_detected_image(config_path ,img_path)->np.ndarray:
+def get_detected_image(config_path ,img_path)->tuple:
     """
     load image and detects stock.
-    output np:ndarray image with bounding box and score
+    output (bool, np.ndarray)
+    (検出されたかどうか, 画像)
     """
 
     # get Bounding Boxes with parameters in "roi_config.ini"
@@ -97,7 +98,7 @@ def get_detected_image(config_path ,img_path)->np.ndarray:
 
     boxes = getter.get_bbox(bgr_img)
     if len(boxes) == 0:
-        return False  # エラーのリターン
+        return (False, bgr_img)  # エラーのリターン
 
     # RoI画像を抽出
     RoIs = get_RoIs(rgb_img, boxes)
@@ -123,4 +124,4 @@ def get_detected_image(config_path ,img_path)->np.ndarray:
         out_img = cv2.putText(bgr_img, str(int(prob*100)), org=(x1, y1),
         color=color, fontFace=1,fontScale=2, thickness=2)
 
-    return out_img
+    return (True, out_img)
