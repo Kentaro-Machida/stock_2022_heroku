@@ -123,5 +123,6 @@ def get_detected_image(config_path ,img_path)->tuple:
         out_img = cv2.rectangle(bgr_img, (x1, y1),(x2, y2),color=color, thickness=4)
         out_img = cv2.putText(bgr_img, str(int(prob*100)), org=(x1, y1),
         color=color, fontFace=1,fontScale=2, thickness=2)
+        count += 1
 
     return (True, out_img)
